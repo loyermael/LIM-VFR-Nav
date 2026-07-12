@@ -11,6 +11,7 @@ import 'state/chart_state.dart';
 import 'state/annotation_state.dart';
 import 'state/tools_state.dart';
 import 'state/waypoint_state.dart';
+import 'state/direct_to_state.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +47,7 @@ Future<void> main() async {
         ChangeNotifierProvider(
           create: (_) => WaypointState(storage),
         ),
+        ChangeNotifierProvider(create: (_) => DirectToState()),
         ChangeNotifierProvider(create: (_) => ToolsState(storage)),
       ],
       child: const LimVfrNavApp(),

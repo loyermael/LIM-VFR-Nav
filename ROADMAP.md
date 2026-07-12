@@ -24,8 +24,9 @@ externes (aérodromes, espaces, relief) sont **embarquées/mises en cache au sol
       `Waypoint` + `WaypointState` + `WaypointLayer`. ✅
 - [ ] **Enregistrement de trace GPS** — fil d'Ariane à l'écran, export `.gpx`,
       rejeu. → bufferiser les fixes de `LocationService`.
-- [ ] **Direct-To un point** — toucher/choisir un point → ligne + distance, cap
-      vrai, ETE (via GS). → `Units` + couche polyline.
+- [x] **Direct-To un point** — depuis un placemark → ligne magenta avion→cible +
+      bandeau DIST / DTK / ETE + repère de virage. `DirectToState` +
+      `DirectToLayer` + `DirectToPanel`. ✅
 - [ ] **Aller à une coordonnée** — saisie lat/long (décimal + DMS) → centre + marqueur.
 - [ ] **Verrou écran cockpit** — bloque les interactions accidentelles en turbulence.
 - [ ] **Profils avion** — TAS, finesse, conso ; alimentent Direct-To et anneau de plané.

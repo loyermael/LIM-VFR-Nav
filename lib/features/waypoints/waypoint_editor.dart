@@ -3,6 +3,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/waypoint.dart';
+import '../../state/direct_to_state.dart';
 import '../../state/waypoint_state.dart';
 
 /// Colours offered for placemarks.
@@ -66,21 +67,34 @@ class _WaypointEditorState extends State<_WaypointEditor> {
     super.dispose();
   }
 
-  void _save() {
+  Waypoint _compose() => (widget.existing ??
+          Waypoint(
+            id: WaypointState.newId(),
+            name: '',
+            position: _pos,
+            colorValue: _color,
+          ))
+      .copyWith(
+    name: _name.text.trim().isEmpty ? 'WPT' : _name.text.trim(),
+    colorValue: _color,
+    note: _note.text.trim(),
+  );
+
+  void _persist(Waypoint wp) {
     final state = context.read<WaypointState>();
-    final wp = (widget.existing ??
-            Waypoint(
-              id: WaypointState.newId(),
-              name: '',
-              position: _pos,
-              colorValue: _color,
-            ))
-        .copyWith(
-      name: _name.text.trim().isEmpty ? 'WPT' : _name.text.trim(),
-      colorValue: _color,
-      note: _note.text.trim(),
-    );
     _isEdit ? state.update(wp) : state.add(wp);
+  }
+
+  void _save() {
+    _persist(_compose());
+    Navigator.of(context).pop();
+  }
+
+  /// Save (if needed) and start a Direct-To leg toward this point.
+  void _directTo() {
+    final wp = _compose();
+    _persist(wp);
+    context.read<DirectToState>().setTarget(wp.position, name: wp.name);
     Navigator.of(context).pop();
   }
 
@@ -147,6 +161,11 @@ class _WaypointEditorState extends State<_WaypointEditor> {
         TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: const Text('Annuler')),
+        OutlinedButton.icon(
+          onPressed: _directTo,
+          icon: const Icon(Icons.navigation, size: 18),
+          label: const Text('Direct-To'),
+        ),
         FilledButton(
           onPressed: _save,
           child: Text(_isEdit ? 'Enregistrer' : 'Ajouter'),
@@ -187,12 +206,27 @@ void showWaypointList(
                     '${w.position.longitude.toStringAsFixed(4)}'
                     '${w.note.isNotEmpty ? '  ·  ${w.note}' : ''}',
                   ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      showWaypointEditor(context, existing: w);
-                    },
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.navigation),
+                        tooltip: 'Direct-To',
+                        onPressed: () {
+                          context
+                              .read<DirectToState>()
+                              .setTarget(w.position, name: w.name);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          showWaypointEditor(context, existing: w);
+                        },
+                      ),
+                    ],
                   ),
                   onTap: () {
                     Navigator.of(context).pop();

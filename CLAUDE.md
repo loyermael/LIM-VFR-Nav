@@ -40,6 +40,9 @@ Four notifiers, each owns one concern — read them to understand app behaviour:
   `waypoints/waypoint_editor.dart`, rendered by `WaypointLayer`); same
   per-chart load/persist pattern as `AnnotationState`. `MapScreen`'s
   `_syncActiveChartLayers` loads both when the active chart changes.
+- **`DirectToState`** — ephemeral (non-persisted) active Direct-To target set
+  from the waypoint editor/list. `DirectToLayer` draws the magenta course line;
+  `DirectToPanel` derives DIST/DTK/ETE + turn cue live from `NavState.flight`.
 - **`ToolsState`** — night mode, the active tool (`none`/`draw`/`measure`),
   distance-ring config, and the current ruler `Measurement`.
 

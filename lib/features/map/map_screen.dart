@@ -17,6 +17,8 @@ import '../measure/measure_layer.dart';
 import '../import/chart_import_screen.dart';
 import '../waypoints/waypoint_editor.dart';
 import '../waypoints/waypoint_layer.dart';
+import '../navigation/direct_to_layer.dart';
+import '../navigation/direct_to_panel.dart';
 import 'aircraft_layer.dart';
 import 'chart_layer.dart';
 import 'distance_rings_layer.dart';
@@ -128,6 +130,7 @@ class _MapScreenState extends State<MapScreen> {
               WaypointLayer(
                 onEdit: (w) => showWaypointEditor(context, existing: w),
               ),
+              const DirectToLayer(),
               const MeasureLayer(),
               const SpeedVectorLayer(),
               const AircraftMarkerLayer(),
@@ -137,10 +140,16 @@ class _MapScreenState extends State<MapScreen> {
             ],
           ),
 
-          // Instrument strip (top).
+          // Instrument strip + Direct-To banner (top).
           const Align(
             alignment: Alignment.topCenter,
-            child: InstrumentBar(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InstrumentBar(),
+                DirectToPanel(),
+              ],
+            ),
           ),
 
           // "No chart" hint.
