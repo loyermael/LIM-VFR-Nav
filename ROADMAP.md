@@ -29,7 +29,9 @@ externes (aérodromes, espaces, relief) sont **embarquées/mises en cache au sol
       `DirectToLayer` + `DirectToPanel`. ✅
 - [ ] **Aller à une coordonnée** — saisie lat/long (décimal + DMS) → centre + marqueur.
 - [ ] **Verrou écran cockpit** — bloque les interactions accidentelles en turbulence.
-- [ ] **Profils avion** — TAS, finesse, conso ; alimentent Direct-To et anneau de plané.
+- [x] **Profils avion** — TAS, finesse, conso ; profil actif = source unique pour
+      l'anneau de plané (#14) et le vent (#16). `AircraftProfile` + `AircraftState`
+      + écran de gestion. ✅
 - [ ] **Chrono & carnet de vol auto** — détection décollage/atterrissage (seuil GS),
       durée, journal local.
 

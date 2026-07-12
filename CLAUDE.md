@@ -43,6 +43,10 @@ Four notifiers, each owns one concern — read them to understand app behaviour:
 - **`DirectToState`** — ephemeral (non-persisted) active Direct-To target set
   from the waypoint editor/list. `DirectToLayer` draws the magenta course line;
   `DirectToPanel` derives DIST/DTK/ETE + turn cue live from `NavState.flight`.
+- **`AircraftState`** — saved `AircraftProfile`s + the active one, persisted in
+  `shared_preferences` (not a per-chart file). The active profile is the single
+  source of TAS / glide ratio / fuel for the glide ring (#14), wind (#16), etc.
+  Managed in `aircraft/aircraft_screen.dart`.
 - **`ToolsState`** — night mode, the active tool (`none`/`draw`/`measure`),
   distance-ring config, and the current ruler `Measurement`.
 

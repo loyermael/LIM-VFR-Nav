@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/aircraft_profile.dart';
 import '../models/annotation.dart';
 import '../models/chart.dart';
 import '../models/waypoint.dart';
@@ -73,6 +74,29 @@ class StorageService {
   Future<void> saveWaypoints(String chartId, List<Waypoint> items) async {
     final f = File('${annotationsDir.path}/$chartId.waypoints.json');
     await f.writeAsString(jsonEncode(items.map((w) => w.toJson()).toList()));
+  }
+
+  // --- Aircraft profiles (small structured settings, kept in prefs) --------
+
+  List<AircraftProfile> loadAircraftProfiles() {
+    final s = _prefs.getString('aircraftProfiles');
+    if (s == null) return [];
+    return (jsonDecode(s) as List)
+        .map((e) => AircraftProfile.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<void> saveAircraftProfiles(List<AircraftProfile> profiles) =>
+      _prefs.setString(
+          'aircraftProfiles', jsonEncode(profiles.map((p) => p.toJson()).toList()));
+
+  String? get activeAircraftId => _prefs.getString('activeAircraftId');
+  set activeAircraftId(String? id) {
+    if (id == null) {
+      _prefs.remove('activeAircraftId');
+    } else {
+      _prefs.setString('activeAircraftId', id);
+    }
   }
 
   // --- Small settings -------------------------------------------------------

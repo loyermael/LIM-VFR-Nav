@@ -19,6 +19,7 @@ import '../waypoints/waypoint_editor.dart';
 import '../waypoints/waypoint_layer.dart';
 import '../navigation/direct_to_layer.dart';
 import '../navigation/direct_to_panel.dart';
+import '../aircraft/aircraft_screen.dart';
 import 'aircraft_layer.dart';
 import 'chart_layer.dart';
 import 'distance_rings_layer.dart';
@@ -181,16 +182,24 @@ class _MapScreenState extends State<MapScreen> {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.only(right: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            BigButton(
-              icon: Icons.map_outlined,
-              tooltip: 'Cartes',
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const ChartImportScreen()),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BigButton(
+                icon: Icons.map_outlined,
+                tooltip: 'Cartes',
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ChartImportScreen()),
+                ),
               ),
-            ),
+              BigButton(
+                icon: Icons.flight,
+                tooltip: 'Profils avion',
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const AircraftScreen()),
+                ),
+              ),
             BigButton(
               icon: nav.followAircraft
                   ? Icons.my_location
@@ -240,6 +249,7 @@ class _MapScreenState extends State<MapScreen> {
               onPressed: tools.toggleNightMode,
             ),
           ],
+          ),
         ),
       ),
     );
