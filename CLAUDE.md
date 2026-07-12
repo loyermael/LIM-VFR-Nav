@@ -33,6 +33,9 @@ Four notifiers, each owns one concern — read them to understand app behaviour:
 - **`NavState`** (`state/nav_state.dart`) — subscribes to the GPS stream, holds
   the latest `FlightState`, and owns `followAircraft` / `trackUp`. `mapRotation`
   (= `-track` in Track-Up) is the single source of truth for map + icon rotation.
+  Also feeds each fix to a `WindEstimator` (`core/wind_estimator.dart`) and
+  exposes `wind` — a circle-fit wind estimate from GPS while circling (#16),
+  shown in the instrument bar and consumed by the glide ring.
 - **`ChartState`** — the imported-chart library and which `ChartDoc` is active.
 - **`AnnotationState`** — scratchpad strokes for the active chart + pen settings;
   persists per-chart on every mutation.

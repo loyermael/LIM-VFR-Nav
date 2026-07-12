@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../state/aircraft_state.dart';
+import '../../state/nav_state.dart';
 import '../../state/tools_state.dart';
 import '../aircraft/aircraft_screen.dart';
 
@@ -46,6 +47,22 @@ class _GlideSettingsState extends State<_GlideSettings> {
 
   double? _num(TextEditingController c) =>
       double.tryParse(c.text.trim().replaceAll(',', '.'));
+
+  Widget _autoWindTile(BuildContext context, ToolsState tools) {
+    final wind = context.watch<NavState>().wind;
+    final subtitle = wind == null
+        ? 'En attente d\'une spirale complète…'
+        : 'Estimé : ${wind.fromDeg.toStringAsFixed(0)}° / '
+            '${wind.speedKts.toStringAsFixed(0)} kt  '
+            '(TAS ≈ ${wind.tasKts.toStringAsFixed(0)} kt)';
+    return SwitchListTile(
+      contentPadding: EdgeInsets.zero,
+      title: const Text('Vent automatique (en spirale)'),
+      subtitle: Text(subtitle),
+      value: tools.autoWind,
+      onChanged: tools.setAutoWind,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,36 +118,39 @@ class _GlideSettingsState extends State<_GlideSettings> {
             onChanged: (_) =>
                 tools.setGlideParams(arrivalAltFt: _num(_arr) ?? 0),
           ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _windDir,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                      labelText: 'Vent du', suffixText: '°'),
-                  onChanged: (_) =>
-                      tools.setGlideParams(windFromDeg: _num(_windDir) ?? 0),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TextField(
-                  controller: _windKt,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                      labelText: 'Vent', suffixText: 'kt'),
-                  onChanged: (_) =>
-                      tools.setGlideParams(windKts: _num(_windKt) ?? 0),
-                ),
-              ),
-            ],
-          ),
+          const Divider(),
+          _autoWindTile(context, tools),
           const SizedBox(height: 4),
-          Text(
-            'Vent manuel en attendant l\'estimation auto (#16).',
-            style: Theme.of(context).textTheme.bodySmall,
+          // Manual wind — used when auto is off or no estimate is available yet.
+          Opacity(
+            opacity: tools.autoWind ? 0.5 : 1,
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _windDir,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
+                    decoration: const InputDecoration(
+                        labelText: 'Vent du (manuel)', suffixText: '°'),
+                    onChanged: (_) =>
+                        tools.setGlideParams(windFromDeg: _num(_windDir) ?? 0),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextField(
+                    controller: _windKt,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
+                    decoration: const InputDecoration(
+                        labelText: 'Vent', suffixText: 'kt'),
+                    onChanged: (_) =>
+                        tools.setGlideParams(windKts: _num(_windKt) ?? 0),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

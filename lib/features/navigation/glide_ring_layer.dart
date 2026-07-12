@@ -32,17 +32,22 @@ class GlideRingLayer extends StatelessWidget {
     final altAglFt = flight.altitudeFeet - tools.arrivalAltFt;
     if (altAglFt <= 0) return const SizedBox.shrink();
 
-    final tasMps = aircraft?.cruiseTasKts != null
-        ? Units.knotsToMps(aircraft!.cruiseTasKts!)
-        : null;
+    // Prefer the auto (circling) wind estimate; fall back to manual values.
+    final estimate = context.watch<NavState>().wind;
+    final useAuto = tools.autoWind && estimate != null;
+    final windFromDeg = useAuto ? estimate.fromDeg : tools.windFromDeg;
+    final windKts = useAuto ? estimate.speedKts : tools.windKts;
+
+    // TAS drives the wind stretch; use the profile's, else the estimate's.
+    final tasKts = aircraft?.cruiseTasKts ?? (useAuto ? estimate.tasKts : null);
 
     final points = glideRangePolygon(
       center: flight.position!,
       altAglMeters: Units.feetToMeters(altAglFt),
       glideRatio: ratio,
-      tasMps: tasMps,
-      windToDeg: Units.normalizeBearing(tools.windFromDeg + 180),
-      windMps: Units.knotsToMps(tools.windKts),
+      tasMps: tasKts != null ? Units.knotsToMps(tasKts) : null,
+      windToDeg: Units.normalizeBearing(windFromDeg + 180),
+      windMps: Units.knotsToMps(windKts),
     );
 
     return PolygonLayer(

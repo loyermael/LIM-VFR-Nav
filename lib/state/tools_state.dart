@@ -48,11 +48,21 @@ class ToolsState extends ChangeNotifier {
   double _arrivalAltFt = 0;
   double get arrivalAltFt => _arrivalAltFt;
 
-  /// Manually-entered wind until auto wind (#16): direction the wind blows FROM.
+  /// Prefer the GPS-circling wind estimate (#16) over the manual values below.
+  bool _autoWind = true;
+  bool get autoWind => _autoWind;
+
+  /// Manually-entered wind (fallback when auto is off or unavailable): the
+  /// direction the wind blows FROM.
   double _windFromDeg = 0;
   double get windFromDeg => _windFromDeg;
   double _windKts = 0;
   double get windKts => _windKts;
+
+  void setAutoWind(bool v) {
+    _autoWind = v;
+    notifyListeners();
+  }
 
   void toggleGlideRing() {
     _glideRingEnabled = !_glideRingEnabled;

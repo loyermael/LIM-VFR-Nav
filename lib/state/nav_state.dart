@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import '../core/wind_estimator.dart';
 import '../models/flight_state.dart';
+import '../models/wind.dart';
 import '../services/location_service.dart';
 
 /// Live navigation state: the latest GPS fix plus the two display modes that
@@ -15,6 +17,12 @@ class NavState extends ChangeNotifier {
   FlightState _flight = FlightState.noFix();
   FlightState get flight => _flight;
 
+  final WindEstimator _windEstimator = WindEstimator();
+
+  /// Latest GPS-circling wind estimate (#16), or null until a full circle has
+  /// been flown. Stays available afterwards until reset.
+  WindEstimate? get wind => _windEstimator.last;
+
   /// Keep the aircraft centred as it moves.
   bool _followAircraft = true;
   bool get followAircraft => _followAircraft;
@@ -26,6 +34,7 @@ class NavState extends ChangeNotifier {
   void start() {
     _sub = _location.stream().listen((f) {
       _flight = f;
+      _windEstimator.add(f); // updates the circling-wind estimate
       notifyListeners();
     });
   }

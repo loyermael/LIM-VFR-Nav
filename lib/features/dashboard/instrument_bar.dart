@@ -14,7 +14,9 @@ class InstrumentBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final flight = context.watch<NavState>().flight;
+    final nav = context.watch<NavState>();
+    final flight = nav.flight;
+    final wind = nav.wind;
     final degraded = !flight.hasFix || flight.accuracyMeters > 50;
 
     return SafeArea(
@@ -54,6 +56,15 @@ class InstrumentBar extends StatelessWidget {
                   : '--',
               unit: 'ft',
             ),
+            if (wind != null) ...[
+              const _Divider(),
+              _Field(
+                label: 'WIND',
+                value: '${Units.formatBearing(wind.fromDeg)}/'
+                    '${wind.speedKts.toStringAsFixed(0)}',
+                unit: 'kt',
+              ),
+            ],
             if (degraded) ...[
               const SizedBox(width: 10),
               const Icon(Icons.gps_off, color: Colors.orangeAccent, size: 22),

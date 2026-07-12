@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -6,6 +7,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:lim_vfr_nav/core/geo_math.dart';
 import 'package:lim_vfr_nav/core/glide_math.dart';
 import 'package:lim_vfr_nav/core/units.dart';
+import 'package:lim_vfr_nav/core/wind_estimator.dart';
+import 'package:lim_vfr_nav/models/flight_state.dart';
 import 'package:lim_vfr_nav/models/geo_calibration.dart';
 
 void main() {
@@ -124,6 +127,36 @@ void main() {
       final dWest = Units.distanceMeters(center, west);
       expect(dEast, greaterThan(r0)); // downwind: farther
       expect(dWest, lessThan(r0)); // upwind: shorter
+    });
+  });
+
+  group('WindEstimator', () {
+    test('recovers wind from a full synthetic circle', () {
+      const tas = 30.0; // m/s
+      const windEast = 10.0; // wind blowing TO the east => FROM 270°
+      final est = WindEstimator();
+      var t = DateTime(2026, 1, 1);
+      WindEstimate? last;
+      for (var deg = 0; deg < 360; deg += 15) {
+        final h = deg * math.pi / 180;
+        final e = tas * math.sin(h) + windEast; // ground velocity east
+        final n = tas * math.cos(h); // ground velocity north
+        final gs = math.sqrt(e * e + n * n);
+        final track = Units.normalizeBearing(math.atan2(e, n) * 180 / math.pi);
+        t = t.add(const Duration(seconds: 2));
+        last = est.add(FlightState(
+          position: const LatLng(45, 5),
+          groundSpeedMps: gs,
+          trackDeg: track,
+          altitudeMeters: 1000,
+          accuracyMeters: 5,
+          timestamp: t,
+        ));
+      }
+      expect(last, isNotNull);
+      expect(last!.fromDeg, closeTo(270, 3));
+      expect(last.speedKts, closeTo(Units.mpsToKnots(windEast), 1));
+      expect(last.tasKts, closeTo(Units.mpsToKnots(tas), 1));
     });
   });
 }

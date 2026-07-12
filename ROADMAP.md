@@ -44,7 +44,9 @@ externes (aérodromes, espaces, relief) sont **embarquées/mises en cache au sol
       via #16, relief via #19. ✅
 - [ ] **Lien avec le vario L!M** — recevoir Vz / vent / thermique en Wi-Fi ou BLE
       et les afficher sur la carte (nav + vario sur un écran). → cf. lm-vario-project.
-- [ ] **Vent estimé en vol** — déduit de GS/TRK au fil d'un virage, sans capteur.
+- [x] **Vent estimé en vol** — fit de cercle sur les vecteurs vitesse-sol GPS en
+      spirale (centre = vent, rayon = TAS). `WindEstimator` dans `NavState`,
+      affiché au bandeau, alimente auto l'anneau de plané (bascule auto/manuel). ✅
 - [ ] **Assistant thermique / spirale** — reprise de l'affichage de l'écran vario.
 
 ## Phase 3 — Cœur navigation VFR (dataset embarqué)
