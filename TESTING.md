@@ -2,6 +2,15 @@
 
 Guide pratique pour lancer et éprouver l'app. Vérifié avec **Flutter 3.44 stable**.
 
+## Le plus simple : double-cliquer
+- **`check.bat`** — vérifie que tout compile (`pub get` + `analyze` + `test`),
+  **sans téléphone**. À lancer en premier.
+- **`run.bat`** — lance l'app. Branche d'abord un téléphone Android (débogage
+  USB) **ou** démarre un émulateur, puis double-clique.
+
+(Les deux trouvent Flutter tout seuls dans `C:\flutter` ou le PATH.) Le reste de
+ce guide détaille les mêmes étapes à la main.
+
 ## 0. Prérequis (une fois)
 Flutter est installé dans `C:\flutter`. Le plus confortable : ajouter
 `C:\flutter\bin` au **PATH** (Variables d'environnement Windows), rouvrir un
