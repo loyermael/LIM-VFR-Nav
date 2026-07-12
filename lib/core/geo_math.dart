@@ -35,7 +35,7 @@ class AffineGeoref {
   /// [atLatitude]. Handy to show the pilot the chart's ground resolution.
   double metersPerPixel(double atLatitude) {
     final mLon = _metersPerDegLon(atLatitude);
-    final mLat = _metersPerDegLat;
+    const mLat = _metersPerDegLat;
     // Length of the +x pixel step on the ground.
     final ex = a * mLon, ey = d * mLat;
     return math.sqrt(ex * ex + ey * ey);
@@ -66,7 +66,7 @@ class AffineGeoref {
     final theta = rotationDeg * math.pi / 180.0;
     final cosT = math.cos(theta), sinT = math.sin(theta);
     final mLon = _metersPerDegLon(anchorWorld.latitude);
-    final mLat = _metersPerDegLat;
+    const mLat = _metersPerDegLat;
     final cx = anchorPixel.dx, cy = anchorPixel.dy;
     final mpp = metersPerPixel;
 

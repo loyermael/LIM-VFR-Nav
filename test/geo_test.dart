@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
@@ -10,6 +9,7 @@ import 'package:lim_vfr_nav/core/units.dart';
 import 'package:lim_vfr_nav/core/wind_estimator.dart';
 import 'package:lim_vfr_nav/models/flight_state.dart';
 import 'package:lim_vfr_nav/models/geo_calibration.dart';
+import 'package:lim_vfr_nav/models/wind.dart';
 
 void main() {
   group('Units', () {
@@ -80,7 +80,7 @@ void main() {
     test('rejects fewer than 3 points', () {
       expect(
         () => AffineGeoref.fit([
-          CalibrationPoint(const Offset(0, 0), const LatLng(0, 0)),
+          const CalibrationPoint(Offset(0, 0), LatLng(0, 0)),
         ]),
         throwsArgumentError,
       );
@@ -88,9 +88,9 @@ void main() {
 
     test('rejects collinear points', () {
       final line = [
-        CalibrationPoint(const Offset(0, 0), const LatLng(46, 4)),
-        CalibrationPoint(const Offset(10, 10), const LatLng(46.01, 4.01)),
-        CalibrationPoint(const Offset(20, 20), const LatLng(46.02, 4.02)),
+        const CalibrationPoint(Offset(0, 0), LatLng(46, 4)),
+        const CalibrationPoint(Offset(10, 10), LatLng(46.01, 4.01)),
+        const CalibrationPoint(Offset(20, 20), LatLng(46.02, 4.02)),
       ];
       expect(() => AffineGeoref.fit(line), throwsArgumentError);
     });

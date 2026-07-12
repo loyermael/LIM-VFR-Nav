@@ -27,7 +27,7 @@ class MeasureLayer extends StatelessWidget {
           points: [m.from, m.to],
           color: cs.secondary,
           strokeWidth: 3,
-          pattern: StrokePattern.dotted(),
+          pattern: const StrokePattern.dotted(),
         ),
       ]),
       MarkerLayer(markers: [

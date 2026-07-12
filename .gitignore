@@ -19,3 +19,9 @@ Thumbs.db
 key.properties
 *.keystore
 *.jks
+
+# Desktop/web targets not used (mobile-only app); regenerate with `flutter create .`
+/linux/
+/macos/
+/windows/
+/web/

@@ -12,7 +12,7 @@ class AircraftState extends ChangeNotifier {
         _activeId = _storage.activeAircraftId;
 
   final StorageService _storage;
-  List<AircraftProfile> _profiles;
+  final List<AircraftProfile> _profiles;
   String? _activeId;
 
   List<AircraftProfile> get profiles => List.unmodifiable(_profiles);
