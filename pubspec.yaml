@@ -1,0 +1,45 @@
+name: lim_vfr_nav
+description: "L!M VFR Nav — offline VFR moving-map for tablets and phones."
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  # Color.withValues() and Material-3 surfaceContainer* roles need Flutter 3.27+.
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # --- Cartography engine ---------------------------------------------------
+  flutter_map: ^7.0.2          # Leaflet-style map: tiles, overlays, markers.
+  latlong2: ^0.9.1             # LatLng type used by flutter_map.
+
+  # --- Custom chart sources -------------------------------------------------
+  sqflite: ^2.3.3              # Reads .mbtiles (they are plain SQLite files).
+  pdfx: ^2.6.0                 # Rasterises high-res PDF charts to an image.
+  # NOTE: georeferenced TIFF must be converted to PNG/JPG before import
+  #       (Flutter's image pipeline has no native TIFF decoder).
+
+  # --- Positioning ----------------------------------------------------------
+  geolocator: ^13.0.1          # GPS position + ground speed + GPS altitude.
+  flutter_compass: ^0.8.0      # Magnetic heading (used for Track-Up when slow).
+
+  # --- State / storage / IO -------------------------------------------------
+  provider: ^6.1.2             # Lightweight ChangeNotifier wiring.
+  file_picker: ^8.1.2          # Import chart files from device storage.
+  path_provider: ^2.1.4        # App-private offline storage directory.
+  shared_preferences: ^2.3.2   # Small persisted settings (theme, last chart).
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icons/
