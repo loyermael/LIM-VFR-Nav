@@ -25,9 +25,13 @@ class _ScaleDialog extends StatefulWidget {
 }
 
 class _ScaleDialogState extends State<_ScaleDialog> {
-  late int? _selected = widget.current ?? 500000; // OACI default
+  // A single int selection: a preset denominator, or [_customSentinel] for the
+  // manual field. Keeps everything under one typed RadioGroup.
+  static const int _customSentinel = 0;
+  late int _selected = widget.current ?? 500000; // OACI default
   final _customCtrl = TextEditingController();
-  bool _custom = false;
+
+  bool get _isCustom => _selected == _customSentinel;
 
   @override
   void dispose() {
@@ -39,47 +43,45 @@ class _ScaleDialogState extends State<_ScaleDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Échelle de la carte'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Indiquée sur la carte (ex. « 1 : 500 000 »).'),
-          const SizedBox(height: 8),
-          for (final entry in kCommonScales.entries)
+      content: RadioGroup<int>(
+        groupValue: _selected,
+        onChanged: (v) => setState(() => _selected = v ?? _selected),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Indiquée sur la carte (ex. « 1 : 500 000 »).'),
+            const SizedBox(height: 8),
+            for (final entry in kCommonScales.entries)
+              RadioListTile<int>(
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+                title: Text(entry.key),
+                value: entry.value,
+              ),
             RadioListTile<int>(
               contentPadding: EdgeInsets.zero,
               dense: true,
-              title: Text(entry.key),
-              value: entry.value,
-              groupValue: _custom ? null : _selected,
-              onChanged: (v) => setState(() {
-                _custom = false;
-                _selected = v;
-              }),
-            ),
-          RadioListTile<bool>(
-            contentPadding: EdgeInsets.zero,
-            dense: true,
-            title: Row(
-              children: [
-                const Text('1 : '),
-                SizedBox(
-                  width: 120,
-                  child: TextField(
-                    controller: _customCtrl,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(hintText: 'ex. 200000'),
-                    onTap: () => setState(() => _custom = true),
-                    onChanged: (_) => setState(() => _custom = true),
+              value: _customSentinel,
+              title: Row(
+                children: [
+                  const Text('1 : '),
+                  SizedBox(
+                    width: 120,
+                    child: TextField(
+                      controller: _customCtrl,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(hintText: 'ex. 200000'),
+                      onTap: () => setState(() => _selected = _customSentinel),
+                      onChanged: (_) =>
+                          setState(() => _selected = _customSentinel),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            value: true,
-            groupValue: _custom,
-            onChanged: (_) => setState(() => _custom = true),
-          ),
-        ],
+          ],
+        ),
       ),
       actions: [
         TextButton(
@@ -88,7 +90,7 @@ class _ScaleDialogState extends State<_ScaleDialog> {
         ),
         FilledButton(
           onPressed: () {
-            final value = _custom
+            final value = _isCustom
                 ? int.tryParse(_customCtrl.text.replaceAll(RegExp(r'\s'), ''))
                 : _selected;
             if (value != null && value > 0) Navigator.pop(context, value);

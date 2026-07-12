@@ -111,15 +111,16 @@ class _CalibrationScreenState extends State<CalibrationScreen> {
   }
 
   Future<void> _editScale() async {
+    final chartState = context.read<ChartState>();
     final s = await showScaleDialog(context, current: _chart.scaleDenominator);
-    if (s != null) {
-      final updated = _chart.copyWith(scaleDenominator: s);
-      await context.read<ChartState>().saveChart(updated);
-      setState(() {
-        _chart = updated;
-        if (_chart.supportsScaleCalibration) _mode = _CalMode.scale;
-      });
-    }
+    if (s == null) return;
+    final updated = _chart.copyWith(scaleDenominator: s);
+    await chartState.saveChart(updated);
+    if (!mounted) return;
+    setState(() {
+      _chart = updated;
+      if (_chart.supportsScaleCalibration) _mode = _CalMode.scale;
+    });
   }
 
   Future<void> _save() async {

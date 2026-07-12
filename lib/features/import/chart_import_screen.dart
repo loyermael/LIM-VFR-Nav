@@ -20,6 +20,10 @@ class _ChartImportScreenState extends State<ChartImportScreen> {
   bool _busy = false;
 
   Future<void> _import() async {
+    // Capture providers up-front so we never touch `context` across an await.
+    final repo = context.read<ChartRepository>();
+    final chartState = context.read<ChartState>();
+
     final picked = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf', 'png', 'jpg', 'jpeg', 'mbtiles'],
@@ -31,7 +35,6 @@ class _ChartImportScreenState extends State<ChartImportScreen> {
     // that actually holds the map before we rasterise it.
     var pdfPage = 1;
     if (path.toLowerCase().endsWith('.pdf')) {
-      final repo = context.read<ChartRepository>();
       final count = await repo.pdfPageCount(path);
       if (!mounted) return;
       if (count > 1) {
@@ -43,7 +46,6 @@ class _ChartImportScreenState extends State<ChartImportScreen> {
 
     setState(() => _busy = true);
     try {
-      final repo = context.read<ChartRepository>();
       var chart = await repo.importFile(path, pdfPage: pdfPage);
       if (!mounted) return;
       // Raster charts must be calibrated before they can be displayed. For a
@@ -55,15 +57,15 @@ class _ChartImportScreenState extends State<ChartImportScreen> {
           chart = chart.copyWith(scaleDenominator: scale);
           await repo.update(chart);
         }
-        await context.read<ChartState>().refresh();
+        await chartState.refresh();
         if (!mounted) return;
         await Navigator.of(context).push(MaterialPageRoute(
           builder: (_) => CalibrationScreen(chart: chart),
         ));
       } else {
-        await context.read<ChartState>().refresh();
+        await chartState.refresh();
         if (!mounted) return;
-        context.read<ChartState>().setActive(chart);
+        chartState.setActive(chart);
       }
     } catch (e) {
       if (mounted) {

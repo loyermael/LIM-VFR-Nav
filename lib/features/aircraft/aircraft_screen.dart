@@ -29,31 +29,35 @@ class AircraftScreen extends StatelessWidget {
                 ),
               ),
             )
-          : ListView(
-              children: [
-                for (final p in state.profiles)
-                  RadioListTile<String>(
-                    value: p.id,
-                    groupValue: state.active?.id,
-                    onChanged: (_) => context.read<AircraftState>().setActive(p.id),
-                    title: Text(p.name),
-                    subtitle: Text(_summary(p)),
-                    secondary: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () => _edit(context, p),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete_outline),
-                          onPressed: () =>
-                              context.read<AircraftState>().remove(p.id),
-                        ),
-                      ],
+          : RadioGroup<String>(
+              groupValue: state.active?.id,
+              onChanged: (id) {
+                if (id != null) context.read<AircraftState>().setActive(id);
+              },
+              child: ListView(
+                children: [
+                  for (final p in state.profiles)
+                    RadioListTile<String>(
+                      value: p.id,
+                      title: Text(p.name),
+                      subtitle: Text(_summary(p)),
+                      secondary: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () => _edit(context, p),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline),
+                            onPressed: () =>
+                                context.read<AircraftState>().remove(p.id),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
     );
   }
