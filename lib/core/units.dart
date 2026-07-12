@@ -19,6 +19,8 @@ class Units {
   static double nmToMeters(double nm) => nm * metersPerNauticalMile;
   static double metersToFeet(double m) => m * feetPerMeter;
   static double mpsToKnots(double mps) => mps * knotsPerMeterPerSecond;
+  static double knotsToMps(double kt) => kt / knotsPerMeterPerSecond;
+  static double feetToMeters(double ft) => ft / feetPerMeter;
 
   static double _rad(double deg) => deg * math.pi / 180.0;
   static double _deg(double rad) => rad * 180.0 / math.pi;

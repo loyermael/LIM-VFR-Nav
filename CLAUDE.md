@@ -48,7 +48,11 @@ Four notifiers, each owns one concern — read them to understand app behaviour:
   source of TAS / glide ratio / fuel for the glide ring (#14), wind (#16), etc.
   Managed in `aircraft/aircraft_screen.dart`.
 - **`ToolsState`** — night mode, the active tool (`none`/`draw`/`measure`),
-  distance-ring config, and the current ruler `Measurement`.
+  distance-ring config, the ruler `Measurement`, and the glide-ring config
+  (enabled, arrival altitude, manual wind). The glide footprint is computed by
+  `core/glide_math.dart` and drawn by `navigation/glide_ring_layer.dart` using
+  the active aircraft's glide ratio + TAS (manual wind until #16, arrival alt
+  until terrain/DEM in #19).
 
 `MapScreen` is the only screen. It owns the `MapController`, drives camera
 follow/rotation via a `NavState` listener (not rebuilds), and keeps

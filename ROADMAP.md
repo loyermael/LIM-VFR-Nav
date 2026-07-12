@@ -38,8 +38,10 @@ externes (aérodromes, espaces, relief) sont **embarquées/mises en cache au sol
 ## Phase 2 — Différenciateurs planeur / L!M ✨
 > L'identité du produit ; fort ROI vis-à-vis des apps GA généralistes.
 
-- [ ] **Anneau de plané (glide range ring)** — rayon = hauteur sol × finesse,
-      décalé par le vent ; couleur selon marge. → étend `DistanceRingsLayer`.
+- [x] **Anneau de plané (glide range ring)** — empreinte hauteur×finesse déformée
+      par le vent (modèle "œuf"), altitude d'arrivée réglable. `glide_math.dart`
+      + `GlideRingLayer` + réglages (finesse profil actif, vent manuel). Vent auto
+      via #16, relief via #19. ✅
 - [ ] **Lien avec le vario L!M** — recevoir Vz / vent / thermique en Wi-Fi ou BLE
       et les afficher sur la carte (nav + vario sur un écran). → cf. lm-vario-project.
 - [ ] **Vent estimé en vol** — déduit de GS/TRK au fil d'un virage, sans capteur.

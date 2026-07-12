@@ -19,6 +19,8 @@ import '../waypoints/waypoint_editor.dart';
 import '../waypoints/waypoint_layer.dart';
 import '../navigation/direct_to_layer.dart';
 import '../navigation/direct_to_panel.dart';
+import '../navigation/glide_ring_layer.dart';
+import '../navigation/glide_settings.dart';
 import '../aircraft/aircraft_screen.dart';
 import 'aircraft_layer.dart';
 import 'chart_layer.dart';
@@ -126,6 +128,7 @@ class _MapScreenState extends State<MapScreen> {
             ),
             children: [
               if (chartLayer != null) chartLayer,
+              const GlideRingLayer(),
               const DistanceRingsLayer(),
               const StrokesLayer(),
               WaypointLayer(
@@ -241,6 +244,12 @@ class _MapScreenState extends State<MapScreen> {
               tooltip: 'Anneaux de distance',
               active: tools.ringsEnabled,
               onPressed: tools.toggleRings,
+            ),
+            BigButton(
+              icon: Icons.paragliding,
+              tooltip: 'Anneau de plané',
+              active: tools.glideRingEnabled,
+              onPressed: () => showGlideSettings(context),
             ),
             BigButton(
               icon: tools.nightMode ? Icons.dark_mode : Icons.light_mode,

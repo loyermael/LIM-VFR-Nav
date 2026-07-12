@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'package:lim_vfr_nav/core/geo_math.dart';
+import 'package:lim_vfr_nav/core/glide_math.dart';
 import 'package:lim_vfr_nav/core/units.dart';
 import 'package:lim_vfr_nav/models/geo_calibration.dart';
 
@@ -89,6 +90,40 @@ void main() {
         CalibrationPoint(const Offset(20, 20), const LatLng(46.02, 4.02)),
       ];
       expect(() => AffineGeoref.fit(line), throwsArgumentError);
+    });
+  });
+
+  group('glideRangePolygon', () {
+    const center = LatLng(45, 5);
+    // 1000 m AGL at glide ratio 40 -> 40 km still-air range.
+    const altAgl = 1000.0, ratio = 40.0;
+    const r0 = altAgl * ratio;
+
+    test('still air is a circle of radius height*ratio', () {
+      final poly = glideRangePolygon(
+          center: center, altAglMeters: altAgl, glideRatio: ratio);
+      for (final p in poly) {
+        expect(Units.distanceMeters(center, p), closeTo(r0, r0 * 0.001));
+      }
+    });
+
+    test('wind stretches the footprint downwind', () {
+      // Wind FROM 270° (west) blows TO 090° (east).
+      const windToDeg = 90.0;
+      final poly = glideRangePolygon(
+        center: center,
+        altAglMeters: altAgl,
+        glideRatio: ratio,
+        tasMps: Units.knotsToMps(80),
+        windToDeg: windToDeg,
+        windMps: Units.knotsToMps(20),
+      );
+      final east = poly.reduce((a, b) => a.longitude > b.longitude ? a : b);
+      final west = poly.reduce((a, b) => a.longitude < b.longitude ? a : b);
+      final dEast = Units.distanceMeters(center, east);
+      final dWest = Units.distanceMeters(center, west);
+      expect(dEast, greaterThan(r0)); // downwind: farther
+      expect(dWest, lessThan(r0)); // upwind: shorter
     });
   });
 }

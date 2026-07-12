@@ -40,6 +40,32 @@ class ToolsState extends ChangeNotifier {
   Measurement? _measurement;
   Measurement? get measurement => _measurement;
 
+  // --- Glide range ring (#14) ----------------------------------------------
+  bool _glideRingEnabled = false;
+  bool get glideRingEnabled => _glideRingEnabled;
+
+  /// Arrival/target elevation in feet (glide computed down to this level).
+  double _arrivalAltFt = 0;
+  double get arrivalAltFt => _arrivalAltFt;
+
+  /// Manually-entered wind until auto wind (#16): direction the wind blows FROM.
+  double _windFromDeg = 0;
+  double get windFromDeg => _windFromDeg;
+  double _windKts = 0;
+  double get windKts => _windKts;
+
+  void toggleGlideRing() {
+    _glideRingEnabled = !_glideRingEnabled;
+    notifyListeners();
+  }
+
+  void setGlideParams({double? arrivalAltFt, double? windFromDeg, double? windKts}) {
+    if (arrivalAltFt != null) _arrivalAltFt = arrivalAltFt;
+    if (windFromDeg != null) _windFromDeg = windFromDeg;
+    if (windKts != null) _windKts = windKts;
+    notifyListeners();
+  }
+
   void setTool(ActiveTool t) {
     // Toggling a tool off returns to plain map navigation.
     _tool = _tool == t ? ActiveTool.none : t;
