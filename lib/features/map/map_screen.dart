@@ -8,12 +8,15 @@ import '../../state/annotation_state.dart';
 import '../../state/chart_state.dart';
 import '../../state/nav_state.dart';
 import '../../state/tools_state.dart';
+import '../../state/waypoint_state.dart';
 import '../../widgets/big_button.dart';
 import '../dashboard/instrument_bar.dart';
 import '../drawing/drawing_layer.dart';
 import '../drawing/drawing_toolbar.dart';
 import '../measure/measure_layer.dart';
 import '../import/chart_import_screen.dart';
+import '../waypoints/waypoint_editor.dart';
+import '../waypoints/waypoint_layer.dart';
 import 'aircraft_layer.dart';
 import 'chart_layer.dart';
 import 'distance_rings_layer.dart';
@@ -73,12 +76,13 @@ class _MapScreenState extends State<MapScreen> {
     return _nav?.flight.position ?? _defaultCenter;
   }
 
-  void _syncAnnotations(ChartDoc? active) {
+  void _syncActiveChartLayers(ChartDoc? active) {
     if (active?.id == _loadedChartId) return;
     _loadedChartId = active?.id;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (active != null && mounted) {
         context.read<AnnotationState>().loadForChart(active.id);
+        context.read<WaypointState>().loadForChart(active.id);
       }
     });
   }
@@ -88,7 +92,7 @@ class _MapScreenState extends State<MapScreen> {
     final chartState = context.watch<ChartState>();
     final tools = context.watch<ToolsState>();
     final active = chartState.active;
-    _syncAnnotations(active);
+    _syncActiveChartLayers(active);
 
     final chartLayer = active != null ? buildChartLayer(active) : null;
 
@@ -104,6 +108,12 @@ class _MapScreenState extends State<MapScreen> {
               maxZoom: 18,
               backgroundColor: Theme.of(context).colorScheme.surface,
               onMapReady: () => _mapReady = true,
+              // Long-press drops a placemark (disabled while a tool owns gestures).
+              onLongPress: (_, latlng) {
+                if (!tools.mapInteractionFrozen) {
+                  showWaypointEditor(context, at: latlng);
+                }
+              },
               // Freeze pan/zoom so draw/measure gestures reach their tool.
               interactionOptions: InteractionOptions(
                 flags: tools.mapInteractionFrozen
@@ -115,6 +125,9 @@ class _MapScreenState extends State<MapScreen> {
               if (chartLayer != null) chartLayer,
               const DistanceRingsLayer(),
               const StrokesLayer(),
+              WaypointLayer(
+                onEdit: (w) => showWaypointEditor(context, existing: w),
+              ),
               const MeasureLayer(),
               const SpeedVectorLayer(),
               const AircraftMarkerLayer(),
@@ -182,6 +195,16 @@ class _MapScreenState extends State<MapScreen> {
               tooltip: 'Track-Up / North-Up',
               active: nav.trackUp,
               onPressed: nav.toggleTrackUp,
+            ),
+            BigButton(
+              icon: Icons.push_pin_outlined,
+              tooltip: 'Points / marqueurs',
+              onPressed: () => showWaypointList(
+                context,
+                onSelect: (w) {
+                  if (_mapReady) _map.move(w.position, _map.camera.zoom);
+                },
+              ),
             ),
             BigButton(
               icon: Icons.gesture,

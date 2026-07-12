@@ -19,9 +19,9 @@ externes (aérodromes, espaces, relief) sont **embarquées/mises en cache au sol
 ## Phase 1 — Quick wins (socle Avenza, sans donnée externe)
 > S'appuient sur l'archi actuelle (`AnnotationState`, `LocationService`, `Units`).
 
-- [ ] **Placemarks / marqueurs perso** — poser un point (nom, note, couleur,
-      icône), persistés par carte, listés dans un panneau. → nouveau modèle
-      `Waypoint` + `WaypointState`.
+- [x] **Placemarks / marqueurs perso** — appui long sur la carte → point (nom,
+      note, couleur), persistés par carte, éditables, listés dans un panneau.
+      `Waypoint` + `WaypointState` + `WaypointLayer`. ✅
 - [ ] **Enregistrement de trace GPS** — fil d'Ariane à l'écran, export `.gpx`,
       rejeu. → bufferiser les fixes de `LocationService`.
 - [ ] **Direct-To un point** — toucher/choisir un point → ligne + distance, cap

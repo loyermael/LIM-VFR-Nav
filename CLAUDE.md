@@ -36,6 +36,10 @@ Four notifiers, each owns one concern — read them to understand app behaviour:
 - **`ChartState`** — the imported-chart library and which `ChartDoc` is active.
 - **`AnnotationState`** — scratchpad strokes for the active chart + pen settings;
   persists per-chart on every mutation.
+- **`WaypointState`** — placemarks for the active chart (long-press to add via
+  `waypoints/waypoint_editor.dart`, rendered by `WaypointLayer`); same
+  per-chart load/persist pattern as `AnnotationState`. `MapScreen`'s
+  `_syncActiveChartLayers` loads both when the active chart changes.
 - **`ToolsState`** — night mode, the active tool (`none`/`draw`/`measure`),
   distance-ring config, and the current ruler `Measurement`.
 

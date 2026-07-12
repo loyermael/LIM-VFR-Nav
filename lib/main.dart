@@ -10,6 +10,7 @@ import 'state/nav_state.dart';
 import 'state/chart_state.dart';
 import 'state/annotation_state.dart';
 import 'state/tools_state.dart';
+import 'state/waypoint_state.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +42,9 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => AnnotationState(storage),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => WaypointState(storage),
         ),
         ChangeNotifierProvider(create: (_) => ToolsState(storage)),
       ],

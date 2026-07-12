@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/annotation.dart';
 import '../models/chart.dart';
+import '../models/waypoint.dart';
 
 /// Owns all on-device persistence. Everything lives in the app's private
 /// documents directory so imported charts and annotations survive restarts and
@@ -58,6 +59,20 @@ class StorageService {
   Future<void> saveStrokes(String chartId, List<Stroke> strokes) async {
     final f = File('${annotationsDir.path}/$chartId.json');
     await f.writeAsString(jsonEncode(strokes.map((s) => s.toJson()).toList()));
+  }
+
+  // --- Waypoints (one file per chart) --------------------------------------
+
+  Future<List<Waypoint>> loadWaypoints(String chartId) async {
+    final f = File('${annotationsDir.path}/$chartId.waypoints.json');
+    if (!await f.exists()) return [];
+    final raw = jsonDecode(await f.readAsString()) as List;
+    return raw.map((e) => Waypoint.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  Future<void> saveWaypoints(String chartId, List<Waypoint> items) async {
+    final f = File('${annotationsDir.path}/$chartId.waypoints.json');
+    await f.writeAsString(jsonEncode(items.map((w) => w.toJson()).toList()));
   }
 
   // --- Small settings -------------------------------------------------------
