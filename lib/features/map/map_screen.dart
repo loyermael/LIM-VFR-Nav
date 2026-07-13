@@ -28,6 +28,11 @@ import '../notam/notam_timeline.dart';
 import '../notam/notam_alert.dart';
 import '../notam/notam_screen.dart';
 import '../notam/notam_sheet.dart';
+import '../airspace/airspace_layer.dart';
+import '../airspace/vertical_profile.dart';
+import '../info/point_info.dart';
+import '../navlog/nav_log.dart';
+import '../../state/airspace_state.dart';
 import 'aircraft_layer.dart';
 import 'chart_layer.dart';
 import 'distance_rings_layer.dart';
@@ -119,10 +124,10 @@ class _MapScreenState extends State<MapScreen> {
               maxZoom: 18,
               backgroundColor: Theme.of(context).colorScheme.surface,
               onMapReady: () => _mapReady = true,
-              // Long-press drops a placemark (disabled while a tool owns gestures).
+              // Long-press opens the point context menu (Infos / point / Direct-To).
               onLongPress: (_, latlng) {
                 if (!tools.mapInteractionFrozen) {
-                  showWaypointEditor(context, at: latlng);
+                  showPointContextMenu(context, latlng);
                 }
               },
               // Freeze pan/zoom so draw/measure gestures reach their tool.
@@ -141,6 +146,7 @@ class _MapScreenState extends State<MapScreen> {
                 maxZoom: 19,
               ),
               if (chartLayer != null) chartLayer,
+              const AirspaceLayer(),
               const GlideRingLayer(),
               const DistanceRingsLayer(),
               const StrokesLayer(),
@@ -195,6 +201,7 @@ class _MapScreenState extends State<MapScreen> {
                     child: DrawingToolbar(),
                   ),
                 const NotamTimeline(),
+                const VerticalProfilePanel(),
               ],
             ),
           ),
@@ -282,6 +289,23 @@ class _MapScreenState extends State<MapScreen> {
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const NotamScreen()),
               ),
+            ),
+            BigButton(
+              icon: Icons.layers,
+              tooltip: 'Espaces aériens',
+              active: context.watch<AirspaceState>().showAirspaces,
+              onPressed: context.read<AirspaceState>().toggleAirspaces,
+            ),
+            BigButton(
+              icon: Icons.area_chart,
+              tooltip: 'Coupe verticale',
+              active: context.watch<AirspaceState>().showProfile,
+              onPressed: context.read<AirspaceState>().toggleProfile,
+            ),
+            BigButton(
+              icon: Icons.list_alt,
+              tooltip: 'Log de navigation',
+              onPressed: () => showNavLog(context),
             ),
             BigButton(
               icon: tools.nightMode ? Icons.dark_mode : Icons.light_mode,

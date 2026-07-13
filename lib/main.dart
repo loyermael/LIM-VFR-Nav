@@ -15,6 +15,7 @@ import 'state/waypoint_state.dart';
 import 'state/direct_to_state.dart';
 import 'state/aircraft_state.dart';
 import 'state/notam_state.dart';
+import 'state/airspace_state.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,6 +57,7 @@ Future<void> main() async {
         ChangeNotifierProvider(
           create: (_) => NotamState(notamRepository)..load(),
         ),
+        ChangeNotifierProvider(create: (_) => AirspaceState()),
         ChangeNotifierProvider(create: (_) => ToolsState(storage)),
       ],
       child: const LimVfrNavApp(),

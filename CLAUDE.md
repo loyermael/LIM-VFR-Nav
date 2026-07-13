@@ -53,6 +53,15 @@ Four notifiers, each owns one concern — read them to understand app behaviour:
   flags; `notam/notam_alert.dart` runs the 3-min intrusion warning off
   `NavState` fixes. Sources in `services/notam_source.dart` (HTTP + bundled
   sample); persisted globally via `StorageService.loadNotams/saveNotams`.
+- **`AirspaceState`** — airspace set (bundled sample) + toggles (draw on map,
+  show vertical profile). `core/airspace_geo.dart` holds the two key algorithms:
+  `verticalProfile` (path samples → distance/altitude boxes per airspace crossed)
+  and `detectThreats` (inside / imminent within look-ahead, at the aircraft's
+  level). `core/geometry.dart` has point-in-polygon + segment intersection.
+  `airspace/vertical_profile.dart` is the retractable bottom panel (blinks red on
+  penetration); `airspace/airspace_layer.dart` draws footprints. Airfield info
+  (long-press → `info/point_info.dart`) and the nav log (`navlog/nav_log.dart`,
+  magnetic via `core/magnetic.dart`) round out the SDVFR-style tools.
 - **`AircraftState`** — saved `AircraftProfile`s + the active one, persisted in
   `shared_preferences` (not a per-chart file). The active profile is the single
   source of TAS / glide ratio / fuel for the glide ring (#14), wind (#16), etc.

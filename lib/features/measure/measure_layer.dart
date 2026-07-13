@@ -3,6 +3,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/magnetic.dart';
+import '../../core/units.dart';
+import '../../state/nav_state.dart';
 import '../../state/tools_state.dart';
 
 /// Draws the virtual ruler: a line between the two measured points with a badge
@@ -20,6 +23,18 @@ class MeasureLayer extends StatelessWidget {
       (m.from.latitude + m.to.latitude) / 2,
       (m.from.longitude + m.to.longitude) / 2,
     );
+
+    // NM · magnetic course · flight time (from current GS, else 90 kt cruise).
+    final flight = context.watch<NavState>().flight;
+    final gs = flight.groundSpeedMps > Units.knotsToMps(5)
+        ? flight.groundSpeedMps
+        : Units.knotsToMps(90);
+    final eteSec = Units.nmToMeters(m.distanceNm) / gs;
+    final mag = Magnetic.trueToMagnetic(m.bearingDeg, m.to);
+    String two(int x) => x.toString().padLeft(2, '0');
+    final ete = '${two(eteSec ~/ 60)}:${two((eteSec % 60).round())}';
+    final label =
+        '${m.distanceNm.toStringAsFixed(1)} NM · ${Units.formatBearing(mag)}°M · $ete';
 
     return Stack(children: [
       PolylineLayer(polylines: [
@@ -46,7 +61,7 @@ class MeasureLayer extends StatelessWidget {
           ),
         Marker(
           point: mid,
-          width: 150,
+          width: 220,
           height: 32,
           child: Center(
             child: Container(
@@ -56,7 +71,7 @@ class MeasureLayer extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                m.label,
+                label,
                 style: TextStyle(
                   color: cs.onSecondary,
                   fontWeight: FontWeight.bold,

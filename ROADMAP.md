@@ -65,7 +65,13 @@ externes (aérodromes, espaces, relief) sont **embarquées/mises en cache au sol
       VFR, zones translucides + drapeaux aérodrome sur la carte, timeline
       temporelle, lecture en clair, **alerte de proximité 3 min** (son+visuel),
       sync/import + stockage offline. `notam_parser.dart` (+ tests). ✅
-- [ ] **Alerte espaces aériens** (CTR/TMA/P/D/R) — géométries AIRAC OpenAIP.
+- [x] **Espaces aériens + outils SDVFR** — modèle espace (cercle/polygone,
+      plancher/plafond), **coupe verticale 20 min** (`airspace_geo.dart`),
+      **détection pénétration/proximité 2 min**, couche carte + surbrillance
+      rouge, règle enrichie (NM/cap magnétique/ETE), time-rings 2/5/10/15,
+      long-press infos terrain (fréquences ≥16sp), nav log ETA/dist/cap magnétique,
+      modèle magnétique. Données espaces/terrains = échantillon (OpenAIP → P3). ✅
+- [ ] **Alerte espaces aériens dataset réel** (CTR/TMA/P/D/R) — géométries AIRAC OpenAIP.
 - [ ] **Alerte relief « terrain ahead »** — MNT/DEM offline (SRTM), couleur hypsométrique.
 - [ ] **Mode urgence** — plus proche terrain posable + cap direct.
 

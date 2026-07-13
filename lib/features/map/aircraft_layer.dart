@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 import '../../core/units.dart';
 import '../../state/nav_state.dart';
 
-/// Prediction horizons for the ground-speed vector (spec: 2, 5 and 10 minutes).
-const List<int> kVectorMinutes = [2, 5, 10];
+/// Prediction horizons for the ground-speed vector (2, 5, 10 and 15 minutes).
+const List<int> kVectorMinutes = [2, 5, 10, 15];
 
 /// The dynamic "where will I be" line projected ahead of the aircraft along the
 /// current track at the current ground speed. Positions are computed in Lat/Lng
