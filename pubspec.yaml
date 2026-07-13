@@ -34,6 +34,10 @@ dependencies:
 
   cupertino_icons: ^1.0.8
 
+  # dart:io-compatible API that also compiles on web (file paths stay dormant
+  # there — chart import is native-only). Lets the app run in a browser.
+  universal_io: ^2.2.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

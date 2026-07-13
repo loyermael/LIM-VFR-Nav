@@ -127,6 +127,13 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
             children: [
+              // Online OSM base map for context (blank when offline; the
+              // imported chart draws on top). Offline nav still works without it.
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.lim.vfrnav',
+                maxZoom: 19,
+              ),
               if (chartLayer != null) chartLayer,
               const GlideRingLayer(),
               const DistanceRingsLayer(),

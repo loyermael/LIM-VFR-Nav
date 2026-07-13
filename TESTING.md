@@ -5,8 +5,13 @@ Guide pratique pour lancer et éprouver l'app. Vérifié avec **Flutter 3.44 sta
 ## Le plus simple : double-cliquer
 - **`check.bat`** — vérifie que tout compile (`pub get` + `analyze` + `test`),
   **sans téléphone**. À lancer en premier.
-- **`run.bat`** — lance l'app. Branche d'abord un téléphone Android (débogage
-  USB) **ou** démarre un émulateur, puis double-clique.
+- **`web.bat`** — lance l'app **dans Chrome, sur le PC** (aucun téléphone). Idéal
+  pour un aperçu rapide. Limites web : import de carte désactivé, GPS = position
+  fixe du PC, fond de carte **OpenStreetMap** en ligne.
+- **`run.bat`** — lance l'app sur **Android** (le vrai cas d'usage). Branche
+  d'abord un téléphone (débogage USB) **ou** démarre un émulateur, puis
+  double-clique. Une **APK** est aussi disponible dans
+  `build/app/outputs/flutter-apk/app-debug.apk` (à copier/installer sur le tel).
 
 (Les deux trouvent Flutter tout seuls dans `C:\flutter` ou le PATH.) Le reste de
 ce guide détaille les mêmes étapes à la main.

@@ -1,8 +1,8 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:pdfx/pdfx.dart';
+import 'package:universal_io/io.dart';
 
 import '../models/chart.dart';
 import 'storage_service.dart';
