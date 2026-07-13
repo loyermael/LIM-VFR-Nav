@@ -38,6 +38,8 @@ dependencies:
   # there — chart import is native-only). Lets the app run in a browser.
   universal_io: ^2.2.2
 
+  http: ^1.2.2                  # NOTAM sync from SIA/FAA/Eurocontrol (on the ground)
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

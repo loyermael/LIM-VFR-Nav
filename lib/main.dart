@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'app.dart';
 import 'services/location_service.dart';
 import 'services/chart_repository.dart';
+import 'services/notam_repository.dart';
 import 'services/storage_service.dart';
 import 'state/nav_state.dart';
 import 'state/chart_state.dart';
@@ -13,6 +14,7 @@ import 'state/tools_state.dart';
 import 'state/waypoint_state.dart';
 import 'state/direct_to_state.dart';
 import 'state/aircraft_state.dart';
+import 'state/notam_state.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +31,7 @@ Future<void> main() async {
   await storage.init();
 
   final chartRepository = ChartRepository(storage);
+  final notamRepository = NotamRepository(storage);
   final locationService = LocationService();
 
   runApp(
@@ -50,6 +53,9 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider(create: (_) => DirectToState()),
         ChangeNotifierProvider(create: (_) => AircraftState(storage)),
+        ChangeNotifierProvider(
+          create: (_) => NotamState(notamRepository)..load(),
+        ),
         ChangeNotifierProvider(create: (_) => ToolsState(storage)),
       ],
       child: const LimVfrNavApp(),

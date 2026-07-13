@@ -9,6 +9,7 @@ import '../../state/chart_state.dart';
 import '../../state/nav_state.dart';
 import '../../state/tools_state.dart';
 import '../../state/waypoint_state.dart';
+import '../../state/notam_state.dart';
 import '../../widgets/big_button.dart';
 import '../dashboard/instrument_bar.dart';
 import '../drawing/drawing_layer.dart';
@@ -22,6 +23,11 @@ import '../navigation/direct_to_panel.dart';
 import '../navigation/glide_ring_layer.dart';
 import '../navigation/glide_settings.dart';
 import '../aircraft/aircraft_screen.dart';
+import '../notam/notam_layer.dart';
+import '../notam/notam_timeline.dart';
+import '../notam/notam_alert.dart';
+import '../notam/notam_screen.dart';
+import '../notam/notam_sheet.dart';
 import 'aircraft_layer.dart';
 import 'chart_layer.dart';
 import 'distance_rings_layer.dart';
@@ -142,6 +148,9 @@ class _MapScreenState extends State<MapScreen> {
                 onEdit: (w) => showWaypointEditor(context, existing: w),
               ),
               const DirectToLayer(),
+              NotamLayer(
+                onSelect: (notams) => showNotamDetails(context, notams),
+              ),
               const MeasureLayer(),
               const SpeedVectorLayer(),
               const AircraftMarkerLayer(),
@@ -151,7 +160,7 @@ class _MapScreenState extends State<MapScreen> {
             ],
           ),
 
-          // Instrument strip + Direct-To banner (top).
+          // Instrument strip + Direct-To banner + NOTAM alert (top).
           const Align(
             alignment: Alignment.topCenter,
             child: Column(
@@ -159,6 +168,7 @@ class _MapScreenState extends State<MapScreen> {
               children: [
                 InstrumentBar(),
                 DirectToPanel(),
+                NotamAlert(),
               ],
             ),
           ),
@@ -173,15 +183,21 @@ class _MapScreenState extends State<MapScreen> {
             child: _controlRail(context, tools),
           ),
 
-          // Drawing palette (bottom) — only while drawing.
-          if (tools.isDrawing)
-            const Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 16),
-                child: DrawingToolbar(),
-              ),
+          // Bottom stack: drawing palette (while drawing) + NOTAM timeline.
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (tools.isDrawing)
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: DrawingToolbar(),
+                  ),
+                const NotamTimeline(),
+              ],
             ),
+          ),
         ],
       ),
     );
@@ -257,6 +273,15 @@ class _MapScreenState extends State<MapScreen> {
               tooltip: 'Anneau de plané',
               active: tools.glideRingEnabled,
               onPressed: () => showGlideSettings(context),
+            ),
+            BigButton(
+              icon: Icons.warning_amber,
+              tooltip: 'NOTAM',
+              active: context.watch<NotamState>().visible &&
+                  context.watch<NotamState>().count > 0,
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const NotamScreen()),
+              ),
             ),
             BigButton(
               icon: tools.nightMode ? Icons.dark_mode : Icons.light_mode,

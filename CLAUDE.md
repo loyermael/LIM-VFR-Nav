@@ -46,6 +46,13 @@ Four notifiers, each owns one concern — read them to understand app behaviour:
 - **`DirectToState`** — ephemeral (non-persisted) active Direct-To target set
   from the waypoint editor/list. `DirectToLayer` draws the magenta course line;
   `DirectToPanel` derives DIST/DTK/ETE + turn cue live from `NavState.flight`.
+- **`NotamState`** — synced NOTAMs + view controls (map visibility, timeline
+  "flight time"). `core/notam_parser.dart` decodes the **Q-line** geometry
+  (`4523N00450E005` → centre+radius); `notam_filter.dart` keeps VFR-relevant
+  ones; `notam/notam_layer.dart` draws zones (translucent circles) + aerodrome
+  flags; `notam/notam_alert.dart` runs the 3-min intrusion warning off
+  `NavState` fixes. Sources in `services/notam_source.dart` (HTTP + bundled
+  sample); persisted globally via `StorageService.loadNotams/saveNotams`.
 - **`AircraftState`** — saved `AircraftProfile`s + the active one, persisted in
   `shared_preferences` (not a per-chart file). The active profile is the single
   source of TAS / glide ratio / fuel for the glide ring (#14), wind (#16), etc.

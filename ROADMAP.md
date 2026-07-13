@@ -61,6 +61,10 @@ externes (aérodromes, espaces, relief) sont **embarquées/mises en cache au sol
 - [ ] **Import/export GPX & KML** des routes et marqueurs (interop SkyDemon / Google Earth).
 
 ## Phase 4 — Sécurité / conscience de situation
+- [x] **Module NOTAM** — parser ligne Q (lat/lon/rayon) + parse complet, filtre
+      VFR, zones translucides + drapeaux aérodrome sur la carte, timeline
+      temporelle, lecture en clair, **alerte de proximité 3 min** (son+visuel),
+      sync/import + stockage offline. `notam_parser.dart` (+ tests). ✅
 - [ ] **Alerte espaces aériens** (CTR/TMA/P/D/R) — géométries AIRAC OpenAIP.
 - [ ] **Alerte relief « terrain ahead »** — MNT/DEM offline (SRTM), couleur hypsométrique.
 - [ ] **Mode urgence** — plus proche terrain posable + cap direct.

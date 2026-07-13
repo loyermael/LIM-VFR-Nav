@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/aircraft_profile.dart';
 import '../models/annotation.dart';
 import '../models/chart.dart';
+import '../models/notam.dart';
 import '../models/waypoint.dart';
 
 /// Owns all on-device persistence. On mobile/desktop everything lives in the
@@ -94,6 +95,32 @@ class StorageService {
   Future<void> saveWaypoints(String chartId, List<Waypoint> items) => _write(
       'annotations/$chartId.waypoints.json',
       jsonEncode(items.map((w) => w.toJson()).toList()));
+
+  // --- NOTAMs (global, synced on the ground, read offline in flight) -------
+
+  Future<List<Notam>> loadNotams() async {
+    final raw = await _read('notams.json');
+    if (raw == null) return [];
+    return (jsonDecode(raw) as List)
+        .map((e) => Notam.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<void> saveNotams(List<Notam> notams) =>
+      _write('notams.json', jsonEncode(notams.map((n) => n.toJson()).toList()));
+
+  DateTime? get notamSyncedAt {
+    final s = _prefs.getString('notamSyncedAt');
+    return s == null ? null : DateTime.tryParse(s);
+  }
+
+  set notamSyncedAt(DateTime? t) {
+    if (t == null) {
+      _prefs.remove('notamSyncedAt');
+    } else {
+      _prefs.setString('notamSyncedAt', t.toIso8601String());
+    }
+  }
 
   // --- Aircraft profiles (small structured settings, kept in prefs) --------
 
